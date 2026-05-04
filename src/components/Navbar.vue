@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCartStore } from '../stores/cart';
-import { Search, ShoppingCart, Store, Moon, Sun, Menu, X } from 'lucide-vue-next';
+import { Search, ShoppingCart, ShoppingBag, Moon, Sun, Menu, X } from 'lucide-vue-next';
 
 const router = useRouter();
 const cartStore = useCartStore();
@@ -40,7 +40,7 @@ const handleSearch = () => {
         <!-- Logo -->
         <router-link to="/" class="flex items-center gap-2 group">
           <div class="p-2 bg-emerald-500 rounded-lg group-hover:bg-emerald-600 transition-colors">
-            <Store class="w-6 h-6 text-white" />
+            <ShoppingBag class="w-6 h-6 text-white" />
           </div>
           <span class="font-bold text-xl tracking-tight text-zinc-900 dark:text-white">EmeraldStore</span>
         </router-link>
