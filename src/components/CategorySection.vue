@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import type { Product } from '../services/api';
 import ProductGrid from './ProductGrid.vue';
 
@@ -8,6 +8,34 @@ const props = defineProps<{
   products: Product[];
   index: number;
 }>();
+
+const isVisible = ref(false);
+const sectionRef = ref<HTMLElement | null>(null);
+let observer: IntersectionObserver | null = null;
+
+onMounted(() => {
+  if (!sectionRef.value) return;
+  
+  observer = new IntersectionObserver((entries) => {
+    const entry = entries[0];
+    if (entry && entry.isIntersecting) {
+      isVisible.value = true;
+      if (observer && sectionRef.value) {
+        observer.unobserve(sectionRef.value);
+        observer.disconnect();
+      }
+    }
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+  
+  observer.observe(sectionRef.value);
+});
+
+onUnmounted(() => {
+  if (observer) observer.disconnect();
+});
 
 // Generate distinct greenish gradient classes based on index
 const backgroundClass = computed(() => {
@@ -27,8 +55,10 @@ const formattedTitle = computed(() => {
 
 <template>
   <section 
+    ref="sectionRef"
     :id="'category-' + category" 
-    class="relative rounded-3xl p-6 lg:p-10 mb-12 border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden"
+    class="relative rounded-3xl p-6 lg:p-10 mb-12 border border-zinc-200/50 dark:border-zinc-800/50 overflow-hidden transition-all duration-500 ease-out transform"
+    :class="isVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-5'"
   >
     <!-- Background Gradient -->
     <div 
